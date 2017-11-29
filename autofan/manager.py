@@ -52,7 +52,7 @@ class ALG():
         
 
 class FanManager(runStruct.LoopInside):
-    def __init__(self,fan=None,*,bootTemp=50,pwOffTemp=45,ceilTemp=80,bootSpeed=50,sens=5,alg=ALG(TempData(50))):
+    def __init__(self,fan=None,*,bootTemp=50,pwOffTemp=45,ceilTemp=80,bootSpeed=50,sens=10,alg=ALG(TempData(50))):
         super().__init__()
         self.fan=fan
         self.__alg=alg
