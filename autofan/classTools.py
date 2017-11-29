@@ -1,4 +1,4 @@
-import threading,six,warnings
+import threading,six,warnings,functools
 
 class Func(type):
     def __new__(cls,name,bases,attrs):
@@ -24,23 +24,43 @@ class Singleton():
 
 class ThreadSafeAttr(type):
     def __new__(cls,name,bases,attrs):
+        userGetAttrExist='__getattr__' in attrs.keys() 
+        if userGetAttrExist:
+            userGetAttr=attrs['__getattr__']
+        userGetAttributeExist='__getarrtibute__' in attrs.keys()
+        if userGetAttributeExist:
+            userGetAttribute=attrs['__getattribute__']
+        userSetAttrExist='__setattr__' in attrs.keys()
+        if userSetAttrExist:
+            userSetAttr=attrs['__setattr__']
+
         def __getattr__(self,*args,**kwargs):
-            with self.__threadSafeLock__:
-                if '__getattr__' in attrs :
-                    ret=attrs['__getattr__'](self,*args,**kwargs)
-                else:
-                    ret=super().__getattr__(*args,**kwargs)
+            with object.__getattribute__(self,'__threadSafeLock__'):
+                if userGetAttrExist:
+                    ret=userGetAttr(self,*args,**kwargs)
             return ret
         def __getattribute__(self,*args,**kwargs):
-            with self.__threadSafeLock__:
-                if '__getarrtibute__' in attrs:
-                    ret=attrs['__getattribute__'](self,*args,**kwargs)
+            with object.__getattribute__(self,'__threadSafeLock__'):
+                if userGetAttributeExist:
+                    ret=userGetAttribute(self,*args,**kwargs)
                 else:
-                    ret=super().__getattribute__(*args,**kwargs)
+                    ret=object.__getattribute__(self,*args,**kwargs)
             return ret
-        if '__getattr__' in attrs :
-            warnings.warn('@threadSafeAttr will create __getattribute__ in your class,so maybe your __getattr__ will not work!',DeprecationWarning)
-        attrs.update({'__getattr__':__getattr__})
+        def __setattr__(self,*args,**kwargs):
+            with object.__getattribute__(self,'__threadSafeLock__'):
+                if userSetAttrExist:
+                    ret=userSetAttr(self,*args,**kwargs)
+                else:
+                    ret=object.__setattr__(self,*args,**kwargs)
+            return ret
+
+        attrs.update({'__setattr__':__setattr__})
+        if userGetAttrExist:
+            attrs.update({'__getattr__':__getattr__})
         attrs.update({'__getattrbute__':__getattribute__})
+        if '__threadSafeLock__' in attrs.keys():
+            raise Exception('__threadSafeLock__ has been used by @threadSafe')
+        rlock=threading.RLock()
+        attrs.update({'__threadSafeLock__':rlock})
         return super().__new__(cls,name,bases,attrs)
 threadSafe=six.add_metaclass(ThreadSafeAttr)
