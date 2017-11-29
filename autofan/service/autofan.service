@@ -1,0 +1,16 @@
+#
+# Note that two different ALSA card state management schemes exist and they
+# can be switched using a file exist check - /etc/alsa/state-daemon.conf .
+#
+
+[Unit]
+Description=auto speed the fan which plug on the GPIO(board mode) pin 11
+
+[Service]
+Type=forking
+ExecStart=/bin/bash /usr/bin/autofan/service/start.sh
+ExecStop=/bin/bash /usr/bin/autofan/service/stop.sh
+
+[Install]
+WantedBy=multi-user.target graphical.target
+

@@ -1,8 +1,12 @@
 import RPi.GPIO as GPIO
-import signal
+import signal,os,sys
 from manager import FanManager
 from dev import Fan
 from tempData import TempData
+pid=os.getpid()
+pidFPath=os.path.join(sys.path[0],'autofan.pid')
+with open(pidFPath,'w') as f:
+    f.write(str(pid))
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
 TempData().keepingUpdate()
@@ -17,3 +21,5 @@ TempData().loop.join()
 myManager.loop.join()
 del myManager
 GPIO.cleanup()
+with open(pidFPath,'w') as f:
+    f.write(str(pid))
