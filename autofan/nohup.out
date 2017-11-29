@@ -1,4 +1,0 @@
-Traceback (most recent call last):
-  File "/usr/bin/autofan/autofan.py", line 7, in <module>
-    with open(os.path.join(sys.path[0],'autofan.pid'),'w') as f:
-PermissionError: [Errno 13] Permission denied: '/usr/bin/autofan/autofan.pid'
