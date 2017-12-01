@@ -49,10 +49,13 @@ class Speed():
     @value.setter
     def value(self,value):
         logging.debug('+'+str(value)+'+')
-        if isinstance(value,(int,float)) and (value >=0 or value<=100):
+        if isinstance(value,(int,float)) and (value >=0 and value<=100):
             self.__speed=value
         else:
-            raise Exception('reference of class <Speed> : function <speed.setter> need Attribute int given %s' %str(type(value)))
+            if value<0:
+                self.__speed=0
+            elif value>100:
+                self.__speed=100
 
     def add(self,fact=1):
         if self.value == None:

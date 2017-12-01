@@ -14,7 +14,7 @@ class ALG():
             self.__data=TempData
         else:
             raise AttributeException('object of calss <ALG>:function <data.setter> need type <TempData> given %' %type(alg))
-    def caculate(self,traceDur=5,traceDeep=(3,-1),precision=0.1,nagtiveDebuff=0.7):
+    def caculate(self,traceDur=5,traceDeep=(3,-1),precision=0.001,nagtiveDebuff=0.7):
         if traceDeep[1]>=0 and traceDeep[1]<traceDeep[0]:
             traceDeep=(traceDeep[0],traceDeep[1])
         curTimeStamp=time.time()
@@ -52,7 +52,7 @@ class ALG():
         
 
 class FanManager(runStruct.LoopInside):
-    def __init__(self,fan=None,*,bootTemp=50,pwOffTemp=45,ceilTemp=80,bootSpeed=50,sens=10,alg=ALG(TempData(50))):
+    def __init__(self,fan=None,*,bootTemp=50,pwOffTemp=45,ceilTemp=80,bootSpeed=50,sens=30,alg=ALG(TempData(50))):
         super().__init__()
         self.fan=fan
         self.__alg=alg
